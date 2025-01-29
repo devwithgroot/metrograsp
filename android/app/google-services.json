@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "418015801998",
+    "project_id": "metrograsp-f5c81",
+    "storage_bucket": "metrograsp-f5c81.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:418015801998:android:952e3a66b0ea159fd98fdf",
+        "android_client_info": {
+          "package_name": "com.sandeep.metrograsp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAW3Bk66ybHAgV51hPkAEL38nsGDOVBJkY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

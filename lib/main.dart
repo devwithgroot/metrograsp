@@ -1,57 +1,34 @@
+import 'package:flash_chat/screens/home_screen.dart';
+import 'package:flash_chat/screens/profile_edit_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:provider/provider.dart';
-import 'features/auth/providers/auth_provider.dart';
-import 'features/auth/screens/auth_screen.dart';
-import 'features/onboarding/screens/onboarding_screen.dart';
-import 'features/period_tracker/screens/calendar_screen.dart';
-import 'core/services/auth_service.dart';
+import 'package:firebase_core/firebase_core.dart'; // Import Firebase Core
+import 'package:flash_chat/screens/welcome_screen.dart';
+import 'package:flash_chat/screens/login_screen.dart';
+import 'package:flash_chat/screens/registration_screen.dart';// Your registration screen
+import 'package:flash_chat/screens/period_tracker_screen.dart';  // Your period tracker screen
+import 'package:flash_chat/screens/user_details_screen.dart'; // Import the UserDetailsScreen
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
-  runApp(
-    MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (_) => AuthProvider(AuthService())),
-      ],
-      child: const MyApp(),
-    ),
-  );
+  WidgetsFlutterBinding.ensureInitialized(); // Ensure bindings are initialized
+  await Firebase.initializeApp(); // Initialize Firebase
+  runApp(PeriodTrackerApp()); // Changed the app name to PeriodTrackerApp
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
+class PeriodTrackerApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Metrograsp',
-      theme: ThemeData(primarySwatch: Colors.pink),
-      home: const SplashScreen(),
-    );
-  }
-}
-
-class SplashScreen extends StatelessWidget {
-  const SplashScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    final authProvider = Provider.of<AuthProvider>(context, listen: false);
-
-    // Check auth state on startup
-    Future.delayed(Duration.zero, () async {
-      await authProvider.checkAuthState();
-      if (authProvider.user == null) {
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const AuthScreen()));
-      } else {
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const CalendarScreen()));
-      }
-    });
-
-    return const Scaffold(
-      body: Center(child: CircularProgressIndicator()),
+      debugShowCheckedModeBanner: false,
+      initialRoute: WelcomeScreen.id, // Entry point is the WelcomeScreen
+      routes: {
+        WelcomeScreen.id: (context) => WelcomeScreen(),
+        RegistrationScreen.id: (context) => RegistrationScreen(),
+        LoginScreen.id: (context) => LoginScreen(),
+        PeriodTrackerScreen.id: (context) => PeriodTrackerScreen(),
+        UserDetailsScreen.id: (context) => UserDetailsScreen(),  // Register UserDetailsScreen route
+        HomeScreen.id: (context) => HomeScreen(),// Added PeriodTrackerScreen
+        ProfileEditScreen.id: (context) => ProfileEditScreen(),
+      },
     );
   }
 }

@@ -1,21 +1,21 @@
 {
   "project_info": {
-    "project_number": "418015801998",
-    "project_id": "metrograsp-f5c81",
-    "storage_bucket": "metrograsp-f5c81.firebasestorage.app"
+    "project_number": "328161564226",
+    "project_id": "flash-chat-3a961",
+    "storage_bucket": "flash-chat-3a961.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:418015801998:android:952e3a66b0ea159fd98fdf",
+        "mobilesdk_app_id": "1:328161564226:android:496be74f0a7e4d351ebfdb",
         "android_client_info": {
-          "package_name": "com.sandeep.metrograsp"
+          "package_name": "com.sandeep.flash_chat"
         }
       },
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyAW3Bk66ybHAgV51hPkAEL38nsGDOVBJkY"
+          "current_key": "AIzaSyBvqGR8EpZWpaqs-4_qe1YLa3lvkiFL7F8"
         }
       ],
       "services": {

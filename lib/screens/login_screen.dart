@@ -1,9 +1,10 @@
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'package:flash_chat/constants.dart';
 import 'package:flash_chat/button.dart';
-import 'package:flash_chat/screens/home_screen.dart';  // Add the import for HomeScreen
+import 'package:flash_chat/screens/home_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   static const String id = 'login_screen';
@@ -17,6 +18,26 @@ class _LoginScreenState extends State<LoginScreen> {
   String? email;
   String? password;
   bool showSpinner = false;
+
+  void showErrorDialog(String message) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('Login Failed'),
+          content: Text(message),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -39,9 +60,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
               ),
-              SizedBox(
-                height: 48.0,
-              ),
+              SizedBox(height: 48.0),
               TextField(
                 keyboardType: TextInputType.emailAddress,
                 textAlign: TextAlign.center,
@@ -50,9 +69,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 },
                 decoration: kTextFieldDecoration.copyWith(hintText: 'Enter your Email'),
               ),
-              SizedBox(
-                height: 8.0,
-              ),
+              SizedBox(height: 8.0),
               TextField(
                 obscureText: true,
                 textAlign: TextAlign.center,
@@ -61,9 +78,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 },
                 decoration: kTextFieldDecoration.copyWith(hintText: 'Enter your password'),
               ),
-              SizedBox(
-                height: 24.0,
-              ),
+              SizedBox(height: 24.0),
               Button(
                 text: 'Log In',
                 color: Colors.lightBlueAccent,
@@ -75,18 +90,16 @@ class _LoginScreenState extends State<LoginScreen> {
                     final user = await _auth.signInWithEmailAndPassword(
                         email: email!, password: password!);
                     if (user != null) {
-                      // Navigate to HomeScreen after successful login
-                      Navigator.pushNamed(context, HomeScreen.id);  // Change this to HomeScreen
+                      Navigator.pushNamed(context, HomeScreen.id);
                     }
-                    setState(() {
-                      showSpinner = false;
-                    });
+                  } on FirebaseAuthException catch (e) {
+                    showErrorDialog("Incorrect Email or password");
                   } catch (e) {
-                    print(e);
-                    setState(() {
-                      showSpinner = false;  // Stop the spinner in case of an error
-                    });
+                    showErrorDialog("An unexpected error occurred.");
                   }
+                  setState(() {
+                    showSpinner = false;
+                  });
                 },
               ),
             ],

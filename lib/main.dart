@@ -7,11 +7,20 @@ import 'package:flash_chat/screens/login_screen.dart';
 import 'package:flash_chat/screens/registration_screen.dart';// Your registration screen
 import 'package:flash_chat/screens/period_tracker_screen.dart';  // Your period tracker screen
 import 'package:flash_chat/screens/user_details_screen.dart'; // Import the UserDetailsScreen
+import 'package:flash_chat/services/notification_service.dart';
+import 'package:permission_handler/permission_handler.dart';
+
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized(); // Ensure bindings are initialized
   await Firebase.initializeApp(); // Initialize Firebase
+  await NotificationService().init();
+  await requestNotificationPermission();
   runApp(PeriodTrackerApp()); // Changed the app name to PeriodTrackerApp
+}
+
+Future<void> requestNotificationPermission() async {
+  await Permission.notification.request();
 }
 
 class PeriodTrackerApp extends StatelessWidget {

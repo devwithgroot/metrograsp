@@ -1,4 +1,4 @@
-# flash_chat
+# Metrograsp App Project
 
 A new Flutter project.
 

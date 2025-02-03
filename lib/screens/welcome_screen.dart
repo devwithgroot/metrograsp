@@ -12,77 +12,121 @@ class WelcomeScreen extends StatefulWidget {
 }
 
 class _WelcomeScreenState extends State<WelcomeScreen> with SingleTickerProviderStateMixin {
-  late AnimationController controller;
-  late Animation animation;
+  late AnimationController _controller;
+  late Animation<Offset> _slideAnimation;
+  late Animation<double> _fadeAnimation;
 
   @override
   void initState() {
     super.initState();
-    controller = AnimationController(
-      duration: Duration(seconds: 3),
+
+    _controller = AnimationController(
+      duration: Duration(milliseconds: 1200),
       vsync: this,
     );
-    animation = ColorTween(begin: Colors.blueGrey, end: Colors.white).animate(controller);
 
-    controller.forward();
-    controller.addListener(() {
-      setState(() {});
-    });
+    // Slide-up animation
+    _slideAnimation = Tween<Offset>(
+      begin: Offset(0, 0.25), // Start 25% down
+      end: Offset.zero, // End at original position
+    ).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: Curves.easeOutQuart,
+      ),
+    );
+
+    // Fade-in animation
+    _fadeAnimation = Tween<double>(
+      begin: 0, // Start fully transparent
+      end: 1, // End fully visible
+    ).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: Curves.easeInOut,
+      ),
+    );
+
+    _controller.forward();
   }
 
   @override
   void dispose() {
-    controller.dispose();
+    _controller.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: animation.value,
+      backgroundColor: Colors.white,
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 24.0),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            Row(
-              children: <Widget>[
-                Hero(
-                  tag: 'logo',
-                  child: Container(
-                    child: Image.asset('images/logo.png'),
-                    height: 70.0,
+          children: [
+            SizedBox(height: 70),
+
+            // Animated Hero Text
+            SlideTransition(
+              position: _slideAnimation,
+              child: FadeTransition(
+                opacity: _fadeAnimation,
+                child: Text(
+                  'Period Companion',
+                  style: TextStyle(
+                    fontSize: 36,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.deepPurple[800],
                   ),
+                  textAlign: TextAlign.center,
                 ),
-                AnimatedTextKit(
-                  animatedTexts: [
-                    TypewriterAnimatedText(
-                      'Period Tracker',
-                      textStyle: TextStyle(
-                        fontSize: 30.0,
-                        color: Colors.blueGrey[700],
-                        fontWeight: FontWeight.w900,
-                      ),
-                    ),
-                  ],
+              ),
+            ),
+
+            SizedBox(height: 16),
+
+            // Subtitle with fade animation
+            FadeTransition(
+              opacity: _fadeAnimation,
+              child: Text(
+                'Empower your health journey with\nsmart cycle tracking and insights',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 18,
+                  color: Colors.deepPurple[600],
+                  height: 1.4,
                 ),
+              ),
+            ),
+
+            // 3D Illustration Space
+            Expanded(
+              child: Container(
+                margin: EdgeInsets.symmetric(vertical: 30),
+                child: Image.asset(
+                  'assets/period_illustration.jpg',
+                  fit: BoxFit.contain,
+                ),
+              ),
+            ),
+
+            // Bottom Buttons
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Button(
+                  text: 'Log In',
+                  color: Colors.deepPurple,
+                  onPressed: () => Navigator.pushNamed(context, LoginScreen.id),
+                ),
+                SizedBox(height: 8),
+                Button(
+                  text: 'Register',
+                  color: Colors.purple[300]!,
+                  onPressed: () => Navigator.pushNamed(context, RegistrationScreen.id),
+                ),
+                SizedBox(height: 30),
               ],
-            ),
-            SizedBox(height: 48.0),
-            Button(
-              text: 'Log In',
-              color: Colors.lightBlueAccent,
-              onPressed: () {
-                Navigator.pushNamed(context, LoginScreen.id);
-              },
-            ),
-            Button(
-              text: 'Register',
-              color: Colors.blueAccent,
-              onPressed: () {
-                Navigator.pushNamed(context, RegistrationScreen.id);
-              },
             ),
           ],
         ),
@@ -90,5 +134,3 @@ class _WelcomeScreenState extends State<WelcomeScreen> with SingleTickerProvider
     );
   }
 }
-
-

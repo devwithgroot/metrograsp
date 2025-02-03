@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';  // Firebase Authentication
+import 'package:firebase_auth/firebase_auth.dart';
 
 class ProfileEditScreen extends StatefulWidget {
   static const String id = 'profile_edit_screen';
@@ -16,88 +16,89 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
   String? updatedName;
   String? updatedAge;
 
-  // Function to update profile
-  void updateProfile() async {
-    setState(() {
-      isLoading = true;
-    });
+  Future<void> _updateProfile() async {
+    setState(() => isLoading = true);
 
     try {
       final user = _auth.currentUser;
       if (user != null) {
-        if (_nameController.text.isNotEmpty) {
+        // Update display name if changed
+        if (_nameController.text.isNotEmpty && 
+            _nameController.text != user.displayName) {
           await user.updateDisplayName(_nameController.text);
         }
 
-        // Saving age in Firestore (you could also save it in the user's profile if needed)
+        // Handle age update (if using Firestore or another database)
         if (_ageController.text.isNotEmpty) {
-          updatedAge = _ageController.text;  // Save the updated age
-          // Optionally save age to Firestore (e.g. firestore.collection('users').doc(user.uid).update({'age': updatedAge}));
+          updatedAge = _ageController.text;
+          // Add Firestore update logic here if needed
         }
 
-        await user.reload(); // Refresh user details
-        final updatedUser = _auth.currentUser;
+        // Reload the user to fetch the latest data
+        await user.reload();
 
+        // Show success message
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Profile updated successfully!')),
+          const SnackBar(content: Text('Profile updated successfully!')),
         );
-        setState(() {
-          updatedName = updatedUser?.displayName ?? _nameController.text;
-          isLoading = false;
-        });
+
+        // Optionally, navigate back to the previous screen
+        Navigator.pop(context);
       }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error updating profile: $e')),
       );
-      setState(() {
-        isLoading = false;
-      });
+    } finally {
+      if (mounted) {
+        setState(() => isLoading = false);
+      }
     }
+  }
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _ageController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Update Profile')),
+      appBar: AppBar(title: const Text('Update Profile')),
       body: Padding(
-        padding: EdgeInsets.all(24.0),
+        padding: const EdgeInsets.all(24.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
             TextField(
               controller: _nameController,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: 'Name',
                 border: OutlineInputBorder(),
               ),
             ),
-            SizedBox(height: 16.0),
+            const SizedBox(height: 16.0),
             TextField(
               controller: _ageController,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: 'Age',
                 border: OutlineInputBorder(),
               ),
               keyboardType: TextInputType.number,
             ),
-            SizedBox(height: 24.0),
+            const SizedBox(height: 24.0),
             ElevatedButton(
-              onPressed: isLoading
-                  ? null
-                  : () {
-                updateProfile();
-              },
+              onPressed: isLoading ? null : _updateProfile,
               child: isLoading
-                  ? CircularProgressIndicator()
-                  : Text('Update Profile'),
+                  ? const CircularProgressIndicator()
+                  : const Text('Update Profile'),
             ),
-            SizedBox(height: 24.0),
-
-            // Display updated profile information below
             if (updatedName != null || updatedAge != null)
               Container(
-                padding: EdgeInsets.all(16.0),
+                padding: const EdgeInsets.all(16.0),
+                margin: const EdgeInsets.only(top: 24.0),
                 decoration: BoxDecoration(
                   color: Colors.blue[50],
                   borderRadius: BorderRadius.circular(8),
@@ -108,7 +109,7 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
                     if (updatedName != null)
                       Text(
                         'Updated Name: $updatedName',
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
                         ),
@@ -116,7 +117,7 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
                     if (updatedAge != null)
                       Text(
                         'Updated Age: $updatedAge',
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
                         ),
